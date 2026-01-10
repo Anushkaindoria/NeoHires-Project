@@ -1,2 +1,14 @@
 # NeoHires
-NeoHires is a month-wise opportunity tracker that helps students discover internships, hackathons, and placements with clear status indicators and a clean UI.
+
+NeoHires is a full-stack platform to track internships and hackathons.
+
+## Features
+- Internship tracking (month-wise)
+- Hackathon listings
+- Backend APIs using Node.js & Express
+- MongoDB Atlas integration
+
+## Tech Stack
+- Frontend: HTML, CSS, JavaScript
+- Backend: Node.js, Express
+- Database: MongoDB Atlas
