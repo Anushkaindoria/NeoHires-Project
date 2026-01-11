@@ -1,5 +1,4 @@
 
-// ================= HACKATHON DATA =================
 let internships = [];
 
 async function fetchInternships() {
@@ -23,129 +22,6 @@ async function fetchHackathons() {
 }
 
 
-// const hackathonData = [
-//   {
-//     company: "Uber",
-//     name: "HackTag",
-//     theme: "Software Engineering",
-//     techStack: [
-//     "C++ / Java / Python",
-//     "Graphs, DP, Advanced Algorithms",
-//   ],
-//     status: "Open",
-//     logo: "assets/logos/uber.png",
-//     applyLink: "https://www.uber.com/"
-//   },
-//   {
-//     company: "Meta",
-//     name: "Meta Hacker Cup",
-//     theme: "Competitive Programming",
-//     techStack: [
-//     "C++ / Java / Python",
-//     "Graphs, DP, Advanced Algorithms"
-    
-//   ],
-//     status: "Open",
-//     logo: "assets/logos/meta.png",
-//     applyLink: "https://www.facebook.com/codingcompetitions"
-//   },
-//   {
-//     company: "Amazon",
-//     name: "Amazon ML Challenge",
-//     theme: "Machine Learning",
-//     techStack: [
-//     "Python, Pandas, Scikit-learn",
-//     "XGBoost, TensorFlow"
-//   ],
-//     status: "Upcoming",
-//     logo: "assets/logos/amazon.png",
-//     applyLink: "https://www.hackerearth.com"
-//   },
-//   {
-//     company: "Nvidia",
-//     name: "NVIDIA AI Hackathon",
-//     theme: "Deep Learning",
-//     techStack: [
-//     "PyTorch, CUDA",
-//     "GPUs, RAPIDS"
-//   ],
-//     status: "Upcoming",
-//     logo: "assets/logos/nvidia.png",
-//     applyLink: "https://www.nvidia.com"
-//   },
-//   {
-//     company: "Apple",
-//     name: "Apple Swift Student Challenge",
-//     theme: "App Development",
-//     techStack: [
-//     "Swift, SwiftUI",
-//     "iOS frameworks"
-//   ],
-//     status: "Upcoming",
-//     logo: "assets/logos/apple.png",
-//     applyLink: "https://developer.apple.com/swift-student-challenge"
-//   },
-//   {
-//     company: "OpenAI",
-//     name: "OpenAI Hackathon",
-//     theme: "Generative AI",
-//     techStack: [
-//     "OpenAI API",
-//     "Python / Node.js"
-//   ],
-//     status: "Upcoming",
-//     logo: "assets/logos/OpenAI.png",
-//     applyLink: "https://openai.com"
-//   },
-//   {
-//     company: "IBM",
-//     name: "IBM Call for Code",
-//     theme: "Climate & Social Good",
-//     techStack: [
-//     "IBM Cloud",
-//     "AI, IoT, Blockchain"
-//   ],
-//     status: "Upcoming",
-//     logo: "assets/logos/ibm.png",
-//     applyLink: "https://www.ibm.com/call-for-code"
-//   },
-//   {
-//     company: "ETH Global",
-//     name: "ETHGlobal Hackathons",
-//     theme: "Climate & Social Good",
-//     techStack: [
-//     "Solidity",
-//     "React + Ethers.js"
-//    ],
-//     status: "Upcoming",
-//     logo: "assets/logos/ETHglobal.jpg",
-//     applyLink: "https://ethglobal.com"
-//   },
-//   {
-//     company: "Solana",
-//     name: "Solana Global Hackathon",
-//     theme: "Blockchain",
-//     techStack: [
-//     "Rust",
-//     "Solana SDK"
-//    ],
-//     status: "Upcoming",
-//     logo: "assets/logos/solana.png",
-//     applyLink: "https://solana.com/hackathons"
-//   },
-//   {
-//     company: "Polkadot",
-//     name: "Polkadot Decode Hackathon",
-//     theme: "Web3 Infra",
-//     techStack: [
-//     "Rust",
-//     "Substrate"
-//    ],
-//     status: "Upcoming",
-//     logo: "assets/logos/polkadot.png",
-//     applyLink: "https://polkadot.network"
-//   }
-// ];
 
 
 function filterMonth(selectedMonth) {
@@ -277,73 +153,7 @@ function toggleActiveButton(index) {
   buttons[index].classList.add("active");
 }
 
-// // Filter hackathons month-wise
-// function filterHackathons(selectedMonth) {
-//   const container = document.getElementById("hackathon-container");
-//   container.innerHTML = "";
 
-//   const filtered = data.filter(
-//     item =>
-//       item.month.toLowerCase() === selectedMonth.toLowerCase() &&
-//       item.type.toLowerCase() === "hackathon"
-//   );
-
-//   if (filtered.length === 0) {
-//     container.innerHTML = `<p style="text-align:center;color:#6b7280;">
-//       No hackathons this month
-//     </p>`;
-//     return;
-//   }
-
-//   filtered.forEach(item => {
-//     const card = document.createElement("div");
-//     card.className = "card";
-
-//     const normalizedStatus = item.status.toLowerCase();
-//     let statusClass = "status-upcoming";
-
-// if (normalizedStatus === "open") {
-//   statusClass = "status-open";
-// } else if (normalizedStatus === "closed") {
-//   statusClass = "status-closed";
-// } else if (normalizedStatus === "closing-soon") {
-//   statusClass = "status-closing-soon";
-// }
-
-
-//     card.innerHTML = `
-//       <div class="card-header">
-//         <img src="${item.logo}" class="company-logo" />
-//         <h3 class="company-name">${item.name}</h3>
-//       </div>
-//       <p><i class="fa-solid fa-code"></i> <strong>Name:</strong> ${item.name}</p>
-//       <p class="hackathon-tag">${item.company}</p>
-//       <hr>
-//       <p><i class="fa-solid fa-code"></i> <strong>Theme:</strong> ${item.role}</p>
-//       <hr>
-//       <p><i class="fa-solid fa-users"></i> <strong>Eligibility:</strong> ${item.eligibility}</p>
-//       <hr>
-
-//       <p class="${statusClass}">● ${item.status}</p>
-
-//       <a href="${item.applyLink}" target="_blank">
-//         <button class="apply-btn">Apply Now</button>
-//       </a>
-//     `;
-
-//     container.appendChild(card);
-//   });
-// }
-
-// Override month click behavior WITHOUT changing existing logic
-// document.querySelectorAll(".month-btn").forEach(btn => {
-//   btn.addEventListener("click", () => {
-//     const month = btn.innerText;
-//     if (currentMode === "hackathon") {
-//       filterHackathons(month);
-//     }
-//   });
-// });
 function showAllHackathons() {
   const container = document.getElementById("hackathon-container");
   container.innerHTML = "";
@@ -393,4 +203,4 @@ function showAllHackathons() {
 }
 
 
-// ================= HACKATHON ADD END =================
+
