@@ -4,7 +4,7 @@ let internships = [];
 
 async function fetchInternships() {
   try {
-    const res = await fetch("http://localhost:5000/api/internships");
+    const res = await fetch("https://neohires-project.onrender.com/api/internships");
     internships = await res.json();
   } catch (err) {
     console.error("Failed to fetch internships", err);
@@ -15,7 +15,7 @@ let hackathons = [];
 
 async function fetchHackathons() {
   try {
-    const res = await fetch("http://localhost:5000/api/hackathons");
+    const res = await fetch("https://neohires-project.onrender.com/api/hackathons");
     hackathons = await res.json();
   } catch (err) {
     console.error("Failed to fetch hackathons", err);
