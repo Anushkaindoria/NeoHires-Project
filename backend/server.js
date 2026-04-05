@@ -34,7 +34,7 @@ const path = require("path");
 app.use(express.static(path.join(__dirname, "..")));
 
 // for all other routes, send index.html
-app.get("*", (req, res) => {
+app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "index.html"));
 });
 
