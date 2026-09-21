@@ -3,10 +3,13 @@ let internships = [];
 
 async function fetchInternships() {
   try {
-    const res = await fetch("https://neohires-project-1.onrender.com/api/internships");
+    const res = await fetch("http://localhost:5000/api/internships");
+    if (!res.ok) throw new Error("Server error");
     internships = await res.json();
   } catch (err) {
     console.error("Failed to fetch internships", err);
+    document.getElementById("cards-container").innerHTML =
+      "<p class='error-msg'>Couldn't load internships. Please try again later.</p>";
   }
 }
 
@@ -14,10 +17,13 @@ let hackathons = [];
 
 async function fetchHackathons() {
   try {
-    const res = await fetch("https://neohires-project-1.onrender.com/api/hackathons");
+    const res = await fetch("http://localhost:5000/api/hackathons");
+    if (!res.ok) throw new Error("Server error");
     hackathons = await res.json();
   } catch (err) {
     console.error("Failed to fetch hackathons", err);
+    document.getElementById("hackathon-container").innerHTML =
+      "<p class='error-msg'>Couldn't load hackathons. Please try again later.</p>";
   }
 }
 
@@ -99,8 +105,7 @@ function selectMonth(button, month) {
   filterMonth(month);
 }
 window.onload = async function () {
-  await fetchInternships();
-  await fetchHackathons();
+  await Promise.all([fetchInternships(), fetchHackathons()]);
 
   const januaryBtn = document.querySelector(".month-btn[onclick*='January']");
   januaryBtn.classList.add("active");
