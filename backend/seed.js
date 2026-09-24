@@ -12,8 +12,46 @@ mongoose.connect(process.env.MONGO_URI)
     await Internship.deleteMany();
     await Hackathon.deleteMany();
 
+    const statusMap = {
+      "closing-soon": "Closing Soon",
+      "Closing-Soon": "Closing Soon",
+      "closing soon": "Closing Soon",
+      "Upcoming": "Upcoming",
+      "Open": "Open",
+      "Closed": "Closed"
+    };
+
+    const monthMap = {
+      January: 0,
+      February: 1,
+      March: 2,
+      April: 3,
+      May: 4,
+      June: 5,
+      July: 6,
+      August: 7,
+      September: 8,
+      October: 9,
+      November: 10,
+      December: 11
+    };
+
+    const addSeedDefaults = (item) => {
+      const normalizedStatus = statusMap[item.status] || item.status;
+      const monthNumber = monthMap[item.month] ?? 0;
+      const deadline = item.deadline
+        ? new Date(item.deadline)
+        : new Date(2026, monthNumber, 20, 0, 0, 0, 0);
+
+      return {
+        ...item,
+        status: normalizedStatus,
+        deadline
+      };
+    };
+
     // Insert internships
-    await Internship.insertMany([
+    const internshipSeed = [
       {
     month: "January",
     company: "Uber",
@@ -21,7 +59,7 @@ mongoose.connect(process.env.MONGO_URI)
     name:"HackTag",
     type: "Hackathon",
     eligibility:"3rd year",
-    status: "closing-soon",
+    status: "Closing-Soon",
     logo: "assets/logos/uber.png",
     applyLink: "https://www.uber.com/careers/"
   },
@@ -567,10 +605,12 @@ mongoose.connect(process.env.MONGO_URI)
     logo: "assets/logos/wipro.png",
     applyLink: "https://www2.deloitte.com/careers"
   }
-    ]);
+    ].map(addSeedDefaults);
+
+    await Internship.insertMany(internshipSeed);
 
     // Insert hackathons
-    await Hackathon.insertMany([
+    const hackathonSeed = [
       {
      company: "Uber",
      name: "HackTag",
@@ -692,7 +732,9 @@ mongoose.connect(process.env.MONGO_URI)
     logo: "assets/logos/polkadot.png",
     applyLink: "https://polkadot.network"
   }
-    ]);
+    ].map(addSeedDefaults);
+
+    await Hackathon.insertMany(hackathonSeed);
 
     console.log("✅ Data seeded successfully");
     process.exit();
