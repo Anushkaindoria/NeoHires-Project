@@ -2,56 +2,167 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>NeoHire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoHire — Never miss an opportunity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="app-header">
-    <div>
-      <h1>NeoHire</h1>
-      <p>Intelligent Internship & Placement Tracker</p>
+  <!-- ================= NAVBAR ================= -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="logo">NeoHire</a>
+      <div class="nav-links">
+        <a href="#app-section">Browse</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#features">Features</a>
+      </div>
+      <a href="#app-section" class="nav-cta">Get started</a>
+    </div>
+  </nav>
+
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1>Every internship and hackathon worth applying to, in one place.</h1>
+        <p class="hero-sub">NeoHire tracks openings across companies so you don't have to check ten tabs a day. New opportunities appear automatically. Expired ones disappear on their own.</p>
+        <div class="hero-actions">
+          <a href="#app-section" class="btn-primary">Browse opportunities</a>
+          <a href="#how-it-works" class="btn-secondary">See how it works</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="stat-chip stat-chip-1">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">live opportunities</span>
+        </div>
+        <div class="stat-chip stat-chip-2">
+          <span class="stat-number">Daily</span>
+          <span class="stat-label">auto-updated</span>
+        </div>
+
+        <div class="preview-card preview-card-back">
+          <div class="preview-header">
+            <div class="preview-logo">JP</div>
+            <div>
+              <p class="preview-company">JP Morgan</p>
+              <p class="preview-role">Software Engineer Intern</p>
+            </div>
+          </div>
+          <p class="preview-status status-upcoming">● Upcoming</p>
+        </div>
+
+        <div class="preview-card preview-card-front">
+          <div class="preview-header">
+            <div class="preview-logo">GO</div>
+            <div>
+              <p class="preview-company">Google</p>
+              <p class="preview-role">GSoC 2026</p>
+            </div>
+          </div>
+          <p class="preview-eligibility">2nd–3rd year · Open source</p>
+          <p class="preview-status status-open">● Open</p>
+          <button class="preview-apply">Apply now</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- 🔹 NEW: Internship / Hackathon Toggle -->
-  <!-- ================= HACKATHON ADD START ================= -->
-  <section id="mode-toggle">
-    <button class="toggle-btn active" onclick="showInternships()">Internships</button>
-    <button class="toggle-btn" onclick="showHackathons()">Hackathons</button>
-  </section>
-  <!-- ================= HACKATHON ADD END ================= -->
-
-  <!-- Month Selector (UNCHANGED) -->
-  <section id="months">
-    <button onclick="selectMonth(this, 'January')" class="month-btn">January</button>
-    <button onclick="selectMonth(this, 'February')" class="month-btn">February</button>
-    <button onclick="selectMonth(this, 'March')" class="month-btn">March</button>
-    <button onclick="selectMonth(this, 'April')" class="month-btn">April</button>
-    <button onclick="selectMonth(this, 'May')" class="month-btn">May</button>
-    <button onclick="selectMonth(this, 'June')" class="month-btn">June</button>
-    <button onclick="selectMonth(this, 'July')" class="month-btn">July</button>
-    <button onclick="selectMonth(this, 'August')" class="month-btn">August</button>
-    <button onclick="selectMonth(this, 'September')" class="month-btn">September</button>
-    <button onclick="selectMonth(this, 'October')" class="month-btn">October</button>
-    <button onclick="selectMonth(this, 'November')" class="month-btn">November</button>
-    <button onclick="selectMonth(this, 'December')" class="month-btn">December</button>
+  <!-- ================= TRUST BAR ================= -->
+  <section class="trust-bar">
+    <div class="trust-item"><span>500+</span>Opportunities tracked</div>
+    <div class="trust-item"><span>0</span>Manual entries needed</div>
+    <div class="trust-item"><span>24/7</span>Automatic updates</div>
+    <div class="trust-item"><span>AI</span>Resume & interview help</div>
   </section>
 
-  <!-- Internship Cards (EXISTING – UNTOUCHED) -->
-  <section id="cards-container">
-    <!-- Internship cards here -->
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="how-it-works" id="how-it-works">
+    <h2>How NeoHire works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-mark">1</div>
+        <h3>We track the sources</h3>
+        <p>Company career pages and listing platforms are checked on a schedule, so new openings show up without anyone adding them by hand.</p>
+      </div>
+      <div class="step">
+        <div class="step-mark">2</div>
+        <h3>You find the right fit</h3>
+        <p>Filter by month, role, or eligibility, or ask the built-in assistant what matches your profile.</p>
+      </div>
+      <div class="step">
+        <div class="step-mark">3</div>
+        <h3>Expired listings clear themselves</h3>
+        <p>Once a deadline passes, the listing is removed automatically. What you see is always current.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- 🔹 NEW: Hackathon Cards Container -->
-  <!-- ================= HACKATHON ADD START ================= -->
-  <section id="hackathon-container" style="display:none;">
-    <!-- Hackathon cards will appear here -->
+  <!-- ================= FEATURES ================= -->
+  <section class="features" id="features">
+    <h2>Built for how students actually search</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>Smart search</h3>
+        <p>Describe what you want in plain words and get matching results, not just keyword hits.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-comments"></i>
+        <h3>Per-listing assistant</h3>
+        <p>Ask questions about a specific opportunity, or check how well your resume fits it.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-bookmark"></i>
+        <h3>Save & track</h3>
+        <p>Bookmark listings and track your application status from applied to offer.</p>
+      </div>
+      <div class="feature-card">
+        <i class="fa-solid fa-user-tie"></i>
+        <h3>Mock HR interviews</h3>
+        <p>Practice with a timed, AI-run interview built around the role you're applying for.</p>
+      </div>
+    </div>
   </section>
-  <!-- ================= HACKATHON ADD END ================= -->
+
+  <!-- ================= APP SECTION (existing functionality) ================= -->
+  <section class="app-section" id="app-section">
+    <h2>Browse current opportunities</h2>
+
+    <section id="mode-toggle">
+      <button class="toggle-btn active" onclick="showInternships()">Internships</button>
+      <button class="toggle-btn" onclick="showHackathons()">Hackathons</button>
+    </section>
+
+    <section id="months">
+      <button onclick="selectMonth(this, 'January')" class="month-btn">January</button>
+      <button onclick="selectMonth(this, 'February')" class="month-btn">February</button>
+      <button onclick="selectMonth(this, 'March')" class="month-btn">March</button>
+      <button onclick="selectMonth(this, 'April')" class="month-btn">April</button>
+      <button onclick="selectMonth(this, 'May')" class="month-btn">May</button>
+      <button onclick="selectMonth(this, 'June')" class="month-btn">June</button>
+      <button onclick="selectMonth(this, 'July')" class="month-btn">July</button>
+      <button onclick="selectMonth(this, 'August')" class="month-btn">August</button>
+      <button onclick="selectMonth(this, 'September')" class="month-btn">September</button>
+      <button onclick="selectMonth(this, 'October')" class="month-btn">October</button>
+      <button onclick="selectMonth(this, 'November')" class="month-btn">November</button>
+      <button onclick="selectMonth(this, 'December')" class="month-btn">December</button>
+    </section>
+
+    <section id="cards-container"></section>
+    <section id="hackathon-container" style="display:none;"></section>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <p>NeoHire — built by students, for students.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>

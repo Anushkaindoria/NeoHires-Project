@@ -51,6 +51,10 @@ async function fetchInternships() {
   } catch (err) {
     console.error("Failed to fetch internships", err);
     internships = [];
+    const container = document.getElementById("cards-container");
+    if (container) {
+      container.innerHTML = "<p class='error-msg'>Couldn't load internships. Please try again later.</p>";
+    }
   }
 }
 
@@ -62,6 +66,10 @@ async function fetchHackathons() {
   } catch (err) {
     console.error("Failed to fetch hackathons", err);
     hackathons = [];
+    const container = document.getElementById("hackathon-container");
+    if (container) {
+      container.innerHTML = "<p class='error-msg'>Couldn't load hackathons. Please try again later.</p>";
+    }
   }
 }
 
@@ -478,8 +486,7 @@ window.onload = async function () {
   setAuthMode("login");
   syncAuthUI();
 
-  await fetchInternships();
-  await fetchHackathons();
+  await Promise.all([fetchInternships(), fetchHackathons()]);
 
   const januaryBtn = document.querySelector(".month-btn[onclick*='January']");
   if (januaryBtn) {
