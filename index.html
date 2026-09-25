@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,8 +11,6 @@
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
 </head>
 <body>
-
-  <!-- ================= NAVBAR ================= -->
   <nav class="navbar">
     <div class="nav-inner">
       <a href="#" class="logo">NeoHire</a>
@@ -25,7 +23,6 @@
     </div>
   </nav>
 
-  <!-- ================= HERO ================= -->
   <header class="hero">
     <div class="hero-inner">
       <div class="hero-copy">
@@ -74,7 +71,6 @@
     </div>
   </header>
 
-  <!-- ================= TRUST BAR ================= -->
   <section class="trust-bar">
     <div class="trust-item"><span>500+</span>Opportunities tracked</div>
     <div class="trust-item"><span>0</span>Manual entries needed</div>
@@ -82,7 +78,6 @@
     <div class="trust-item"><span>AI</span>Resume & interview help</div>
   </section>
 
-  <!-- ================= HOW IT WORKS ================= -->
   <section class="how-it-works" id="how-it-works">
     <h2>How NeoHire works</h2>
     <div class="steps">
@@ -104,7 +99,6 @@
     </div>
   </section>
 
-  <!-- ================= FEATURES ================= -->
   <section class="features" id="features">
     <h2>Built for how students actually search</h2>
     <div class="feature-grid">
@@ -131,9 +125,90 @@
     </div>
   </section>
 
-  <!-- ================= APP SECTION (existing functionality) ================= -->
   <section class="app-section" id="app-section">
     <h2>Browse current opportunities</h2>
+
+    <header class="app-header">
+      <div>
+        <h1>NeoHire</h1>
+        <p>Intelligent Internship & Placement Tracker</p>
+      </div>
+      <div class="header-actions">
+        <span id="user-badge" class="user-badge">Not signed in</span>
+        <button id="logout-btn" class="secondary-btn hidden">Logout</button>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section id="auth-section" class="auth-section">
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button type="button" class="tab-btn active" data-auth-mode="login">Login</button>
+            <button type="button" class="tab-btn" data-auth-mode="signup">Sign Up</button>
+          </div>
+
+          <form id="auth-form">
+            <div id="name-field" class="field hidden">
+              <label for="name-input">Name</label>
+              <input id="name-input" type="text" placeholder="Enter your name">
+            </div>
+
+            <div class="field">
+              <label for="email-input">Email</label>
+              <input id="email-input" type="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="field">
+              <label for="password-input">Password</label>
+              <input id="password-input" type="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="primary-btn" id="auth-submit">Login</button>
+          </form>
+
+          <div id="auth-message" class="auth-message"></div>
+        </div>
+      </section>
+
+      <section id="dashboard-section" class="dashboard-section hidden">
+        <h2>My Dashboard</h2>
+
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span>Saved</span>
+            <strong id="summary-saved">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Applied</span>
+            <strong id="summary-applied">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Interviewing</span>
+            <strong id="summary-interviewing">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Rejected</span>
+            <strong id="summary-rejected">0</strong>
+          </div>
+          <div class="summary-card">
+            <span>Offers</span>
+            <strong id="summary-offer">0</strong>
+          </div>
+        </div>
+
+        <div class="dashboard-columns">
+          <div class="dashboard-panel">
+            <h3>Saved Listings</h3>
+            <div id="saved-list" class="dashboard-list"></div>
+          </div>
+
+          <div class="dashboard-panel">
+            <h3>Applications</h3>
+            <div id="applications-list" class="dashboard-list"></div>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <section id="mode-toggle">
       <button class="toggle-btn active" onclick="showInternships()">Internships</button>
@@ -159,7 +234,6 @@
     <section id="hackathon-container" style="display:none;"></section>
   </section>
 
-  <!-- ================= FOOTER ================= -->
   <footer class="footer">
     <p>NeoHire — built by students, for students.</p>
   </footer>
