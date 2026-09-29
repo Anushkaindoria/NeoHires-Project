@@ -140,18 +140,41 @@ async function loadDashboard() {
 
 function renderDashboard() {
   const summary = state.dashboard?.summary || {
+    savedCount: 0,
     appliedCount: 0,
     interviewingCount: 0,
     rejectedCount: 0,
     offerCount: 0
   };
 
+  document.getElementById("summary-saved").textContent = summary.savedCount;
   document.getElementById("summary-applied").textContent = summary.appliedCount;
   document.getElementById("summary-interviewing").textContent = summary.interviewingCount;
   document.getElementById("summary-rejected").textContent = summary.rejectedCount;
   document.getElementById("summary-offer").textContent = summary.offerCount;
 
+  const savedList = document.getElementById("saved-list");
   const appsList = document.getElementById("applications-list");
+
+  if (!state.dashboard || !state.dashboard.savedListings?.length) {
+    savedList.innerHTML = '<div class="empty-state">No saved listings yet.</div>';
+  } else {
+    savedList.innerHTML = state.dashboard.savedListings.map((item) => {
+      const listing = item.listing || {};
+      const company = listing.company || "Opportunity";
+      const name = listing.name || listing.theme || "Listing";
+      return `
+        <div class="dashboard-item">
+          <div>
+            <strong>${company}</strong>
+            <p>${name}</p>
+            <small>${item.listingType}</small>
+          </div>
+          <button class="danger-btn" data-delete-saved="${item._id}">Remove</button>
+        </div>
+      `;
+    }).join("");
+  }
 
   if (!state.dashboard || !state.dashboard.applications?.length) {
     appsList.innerHTML = '<div class="empty-state">No applications tracked yet.</div>';
@@ -228,6 +251,34 @@ async function handleLogout() {
   syncAuthUI();
 }
 
+async function handleSaveListing(listingType, listingId) {
+  if (!state.token) {
+    showMessage("Please log in to save this listing.", "error");
+    return;
+  }
+
+  try {
+    await apiRequest("/api/saved", {
+      method: "POST",
+      body: JSON.stringify({ listingType, listingId })
+    });
+    showMessage("Listing saved successfully.", "success");
+    await loadDashboard();
+  } catch (error) {
+    showMessage(error.message, "error");
+  }
+}
+
+async function handleDeleteSaved(id) {
+  try {
+    await apiRequest(`/api/saved/${id}`, { method: "DELETE" });
+    showMessage("Saved listing removed.", "success");
+    await loadDashboard();
+  } catch (error) {
+    showMessage(error.message, "error");
+  }
+}
+
 async function handleDeleteApplication(id) {
   try {
     await apiRequest(`/api/applications/${id}`, { method: "DELETE" });
@@ -297,6 +348,9 @@ function filterMonth(selectedMonth) {
           Apply Now
         </button>
       </a>
+      <button class="save-btn" data-save-listing="${item._id}" data-listing-type="internship">
+        Save
+      </button>
     `;
 
     container.appendChild(card);
@@ -378,6 +432,7 @@ function showAllHackathons() {
       <a href="${item.applyLink}" target="_blank">
         <button class="apply-btn">Apply Now</button>
       </a>
+      <button class="save-btn" data-save-listing="${item._id}" data-listing-type="hackathon">Save</button>
     `;
 
     container.appendChild(card);
@@ -393,6 +448,20 @@ function bindGlobalEvents() {
   document.getElementById("logout-btn").addEventListener("click", handleLogout);
 
   document.addEventListener("click", async (event) => {
+    const saveButton = event.target.closest("[data-save-listing]");
+    if (saveButton) {
+      const listingId = saveButton.dataset.saveListing;
+      const listingType = saveButton.dataset.listingType;
+      await handleSaveListing(listingType, listingId);
+      return;
+    }
+
+    const deleteSaved = event.target.closest("[data-delete-saved]");
+    if (deleteSaved) {
+      await handleDeleteSaved(deleteSaved.dataset.deleteSaved);
+      return;
+    }
+
     const deleteApp = event.target.closest("[data-delete-application]");
     if (deleteApp) {
       await handleDeleteApplication(deleteApp.dataset.deleteApplication);

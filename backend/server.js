@@ -53,6 +53,7 @@ app.post("/api/cleanup-expired", async (req, res) => {
 app.use("/api/internships", require("./routes/internships"));
 app.use("/api/hackathons", require("./routes/hackathons"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/saved", require("./routes/savedListings"));
 app.use("/api/applications", require("./routes/applicationStatus"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 
