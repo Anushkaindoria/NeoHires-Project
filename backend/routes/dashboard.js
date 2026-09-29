@@ -1,5 +1,4 @@
 const express = require("express");
-const SavedListing = require("../models/SavedListing");
 const ApplicationStatus = require("../models/ApplicationStatus");
 const Internship = require("../models/Internship");
 const Hackathon = require("../models/Hackathon");
@@ -15,20 +14,7 @@ const getListingByType = async (listingType, listingId) => {
 
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const savedListings = await SavedListing.find({ user: req.user._id }).sort({ createdAt: -1 }).lean();
     const applications = await ApplicationStatus.find({ user: req.user._id }).sort({ updatedAt: -1 }).lean();
-
-    const savedWithDetails = await Promise.all(
-      savedListings.map(async (item) => {
-        const listing = await getListingByType(item.listingType, item.listingId);
-        return {
-          _id: item._id,
-          listingType: item.listingType,
-          createdAt: item.createdAt,
-          listing: listing || null,
-        };
-      })
-    );
 
     const applicationsWithDetails = await Promise.all(
       applications.map(async (item) => {
@@ -46,7 +32,6 @@ router.get("/", requireAuth, async (req, res) => {
     );
 
     const summary = {
-      savedCount: savedWithDetails.length,
       appliedCount: applicationsWithDetails.filter((item) => item.status === "Applied").length,
       interviewingCount: applicationsWithDetails.filter((item) => item.status === "Interviewing").length,
       rejectedCount: applicationsWithDetails.filter((item) => item.status === "Rejected").length,
@@ -61,7 +46,6 @@ router.get("/", requireAuth, async (req, res) => {
         role: req.user.role,
       },
       summary,
-      savedListings: savedWithDetails,
       applications: applicationsWithDetails,
     });
   } catch (error) {
