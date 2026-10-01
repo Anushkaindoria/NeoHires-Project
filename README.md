@@ -47,6 +47,23 @@ Visit:
 http://localhost:5000
 ```
 
+## Day 3 backend APIs
+The Day 3 backend work includes authentication and dashboard APIs for personal tracking.
+
+### Authentication
+- `POST /api/auth/signup` — create a new user account
+- `POST /api/auth/login` — authenticate an existing user and return a JWT
+- requests to protected routes must include `Authorization: Bearer <token>`
+
+### Dashboard and tracking
+- `GET /api/dashboard` — return the current user profile, saved listings, application records, and summary counts
+- `GET /api/saved` — fetch saved internship and hackathon listings for the logged-in user
+- `POST /api/saved` — save a listing for the current user
+- `DELETE /api/saved/:id` — remove a saved listing
+- `GET /api/applications` — fetch the user’s application status records
+- `POST /api/applications` — create or update an application status entry
+- `DELETE /api/applications/:id` — remove a tracking record
+
 ## Project structure
 ```text
 NeoHires-Project/
