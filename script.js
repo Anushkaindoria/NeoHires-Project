@@ -12,7 +12,9 @@ const state = {
   authMode: "login",
   token: localStorage.getItem(AUTH_KEY) || "",
   user: null,
-  dashboard: null
+  dashboard: null,
+  selectedMonth: "January",
+  searchQuery: ""
 };
 
 function getAuthHeaders() {
@@ -302,13 +304,41 @@ async function handleApplicationStatusUpdate(id, status) {
   }
 }
 
+function matchesSearchQuery(item, query) {
+  if (!query) return true;
+  const safeQuery = query.toLowerCase().trim();
+  const searchableText = [
+    item.company,
+    item.name,
+    item.role,
+    item.theme,
+    item.type,
+    item.eligibility,
+    item.techStack ? item.techStack.join(" ") : "",
+    item.status
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return searchableText.includes(safeQuery);
+}
+
 function filterMonth(selectedMonth) {
+  state.selectedMonth = selectedMonth;
   const container = document.getElementById("cards-container");
   container.innerHTML = "";
 
   const filtered = internships.filter(
-    (item) => item.month.toLowerCase() === selectedMonth.toLowerCase()
+    (item) =>
+      item.month.toLowerCase() === selectedMonth.toLowerCase() &&
+      matchesSearchQuery(item, state.searchQuery)
   );
+
+  if (!filtered.length) {
+    container.innerHTML = "<div class='empty-state'>No internships match this filter.</div>";
+    return;
+  }
 
   filtered.forEach((item) => {
     const card = document.createElement("div");
@@ -387,6 +417,21 @@ function showHackathons() {
   showAllHackathons();
 }
 
+function handleSearchInput(event) {
+  state.searchQuery = event.target.value;
+
+  if (currentMode === "internship") {
+    const activeButton = document.querySelector(".month-btn.active");
+    if (activeButton) {
+      filterMonth(activeButton.textContent.trim());
+    } else {
+      filterMonth(state.selectedMonth);
+    }
+  } else {
+    showAllHackathons();
+  }
+}
+
 function toggleActiveButton(index) {
   const buttons = document.querySelectorAll(".toggle-btn");
   buttons.forEach((btn) => btn.classList.remove("active"));
@@ -397,7 +442,14 @@ function showAllHackathons() {
   const container = document.getElementById("hackathon-container");
   container.innerHTML = "";
 
-  hackathons.forEach((item) => {
+  const filteredHackathons = hackathons.filter((item) => matchesSearchQuery(item, state.searchQuery));
+
+  if (!filteredHackathons.length) {
+    container.innerHTML = "<div class='empty-state'>No hackathons match this filter.</div>";
+    return;
+  }
+
+  filteredHackathons.forEach((item) => {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -446,6 +498,11 @@ function bindGlobalEvents() {
 
   document.getElementById("auth-form").addEventListener("submit", handleAuthSubmit);
   document.getElementById("logout-btn").addEventListener("click", handleLogout);
+
+  const searchInput = document.getElementById("list-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", handleSearchInput);
+  }
 
   document.addEventListener("click", async (event) => {
     const saveButton = event.target.closest("[data-save-listing]");
