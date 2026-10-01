@@ -4,7 +4,9 @@ require("dotenv").config();
 const Internship = require("./models/Internship");
 const Hackathon = require("./models/Hackathon");
 
-mongoose.connect(process.env.MONGO_URI)
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/neohires";
+
+mongoose.connect(MONGO_URI)
   .then(async () => {
     console.log("MongoDB connected for seeding");
 
