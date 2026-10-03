@@ -8,6 +8,7 @@ const API_BASE = (() => {
 })();
 
 const AUTH_KEY = "neohires_token";
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const state = {
   authMode: "login",
   token: localStorage.getItem(AUTH_KEY) || "",
@@ -16,6 +17,21 @@ const state = {
   selectedMonth: "January",
   searchQuery: ""
 };
+
+function getDefaultMonth() {
+  const now = new Date();
+  const currentMonth = MONTHS[now.getMonth()];
+
+  if (internships.some((item) => item.month && item.month.toLowerCase() === currentMonth.toLowerCase())) {
+    return currentMonth;
+  }
+
+  const firstAvailableMonth = MONTHS.find((month) =>
+    internships.some((item) => item.month && item.month.toLowerCase() === month.toLowerCase())
+  );
+
+  return firstAvailableMonth || "January";
+}
 
 function getAuthHeaders() {
   const headers = { "Content-Type": "application/json" };
@@ -532,10 +548,6 @@ function bindGlobalEvents() {
     }
   });
 
-  const januaryBtn = document.querySelector(".month-btn[onclick*='January']");
-  if (januaryBtn) {
-    januaryBtn.classList.add("active");
-  }
 }
 
 window.onload = async function () {
@@ -545,12 +557,14 @@ window.onload = async function () {
 
   await Promise.all([fetchInternships(), fetchHackathons()]);
 
-  const januaryBtn = document.querySelector(".month-btn[onclick*='January']");
-  if (januaryBtn) {
-    januaryBtn.classList.add("active");
+  state.selectedMonth = getDefaultMonth();
+  document.querySelectorAll(".month-btn").forEach((btn) => btn.classList.remove("active"));
+  const activeMonthBtn = document.querySelector(`.month-btn[onclick*='${state.selectedMonth}']`);
+  if (activeMonthBtn) {
+    activeMonthBtn.classList.add("active");
   }
 
-  filterMonth("January");
+  filterMonth(state.selectedMonth);
 
   if (state.token) {
     await loadDashboard();
