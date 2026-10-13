@@ -70,3 +70,38 @@ export async function setApplicationStatus(token, listingType, listingId, status
   if (!res.ok) throw new Error(data.message || "Failed to update status");
   return data;
 }
+
+
+export async function updateApplicationStatus(token, applicationId, status) {
+  const res = await fetch(`${API_BASE}/applications/${applicationId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Failed to update status");
+  return data;
+}
+
+export async function deleteApplication(token, applicationId) {
+  const res = await fetch(`${API_BASE}/applications/${applicationId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Failed to remove application");
+  return data;
+}
+
+export async function removeSavedListing(token, savedId) {
+  const res = await fetch(`${API_BASE}/saved/${savedId}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Failed to remove saved listing");
+  return data;
+}

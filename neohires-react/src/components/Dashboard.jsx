@@ -1,15 +1,53 @@
 import { useState, useEffect } from "react";
-import { fetchDashboard } from "../services/api";
+import {
+  fetchDashboard,
+  updateApplicationStatus,
+  deleteApplication,
+  removeSavedListing,
+} from "../services/api";
+
+const STATUS_OPTIONS = ["Applied", "Interviewing", "Rejected", "Offer"];
 
 function Dashboard({ token }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const loadDashboard = () => {
     fetchDashboard(token)
       .then((result) => setData(result))
       .catch((err) => setError(err.message));
+  };
+
+  useEffect(() => {
+    loadDashboard();
   }, [token]);
+
+  const handleStatusChange = async (applicationId, newStatus) => {
+    try {
+      await updateApplicationStatus(token, applicationId, newStatus);
+      loadDashboard();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleRemoveApplication = async (applicationId) => {
+    try {
+      await deleteApplication(token, applicationId);
+      loadDashboard();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleUnsave = async (savedId) => {
+    try {
+      await removeSavedListing(token, savedId);
+      loadDashboard();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   if (error) return <p className="empty-state">{error}</p>;
   if (!data) return <p>Loading dashboard...</p>;
@@ -56,7 +94,15 @@ function Dashboard({ token }) {
                     <strong>{item.listing?.company}</strong>
                     <p>{item.listing?.role || item.listing?.name}</p>
                   </div>
-                  <small>{item.listingType}</small>
+                  <div className="dashboard-item-actions">
+                    <small>{item.listingType}</small>
+                    <button
+                      className="remove-btn"
+                      onClick={() => handleUnsave(item._id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
               ))
             )}
@@ -73,7 +119,24 @@ function Dashboard({ token }) {
                 <div className="dashboard-item dashboard-item-column" key={item._id}>
                   <strong>{item.listing?.company}</strong>
                   <p>{item.listing?.role || item.listing?.name}</p>
-                  <small>{item.status}</small>
+
+                  <select
+                    value={item.status}
+                    onChange={(e) => handleStatusChange(item._id, e.target.value)}
+                  >
+                    {STATUS_OPTIONS.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+
+                  <button
+                    className="remove-btn"
+                    onClick={() => handleRemoveApplication(item._id)}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))
             )}
