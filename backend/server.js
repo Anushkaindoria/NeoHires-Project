@@ -56,6 +56,7 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/saved", require("./routes/savedListings"));
 app.use("/api/applications", require("./routes/applicationStatus"));
 app.use("/api/dashboard", require("./routes/dashboard"));
+app.use("/api/mock-interview", require("./routes/mockInterview"));
 
 mongoose
   .connect(MONGO_URI)
