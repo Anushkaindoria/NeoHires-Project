@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { saveListing, setApplicationStatus } from "../services/api";
+import ResumeCheckModal from "./ResumeCheckModal";
 
 const POPUP_W = 340;
 const POPUP_MAX_H = 320;
@@ -43,6 +44,7 @@ function InternshipCard({ internship, token, isLoggedIn }) {
   const [feedback, setFeedback] = useState("");
   const [logoFailed, setLogoFailed] = useState(false);
   const [pos, setPos] = useState(null); // null = popup hidden
+  const [showResume, setShowResume] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -65,12 +67,11 @@ function InternshipCard({ internship, token, isLoggedIn }) {
   const summary = getSummary(internship.description);
 
   const showPopup = (e) => {
-    if (!summary) return;
+    if (!summary || showResume) return;
     const r = e.currentTarget.getBoundingClientRect();
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // Card ke right mein, jagah na ho to left mein, wo bhi na ho to card ke upar.
     let left = r.right + 12;
     if (left + POPUP_W > vw - 8) left = r.left - POPUP_W - 12;
     if (left < 8) left = Math.max(8, Math.min(r.left, vw - POPUP_W - 8));
@@ -117,7 +118,22 @@ function InternshipCard({ internship, token, isLoggedIn }) {
         <p className="empty-state">Log in to save or track this listing.</p>
       )}
 
+      <button
+        className="save-btn"
+        onClick={() => {
+          setPos(null);
+          setShowResume(true);
+        }}
+      >
+        Check my resume
+      </button>
+
+      {showResume && (
+        <ResumeCheckModal internship={internship} onClose={() => setShowResume(false)} />
+      )}
+
       {pos &&
+        !showResume &&
         createPortal(
           <div
             role="tooltip"

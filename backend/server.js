@@ -58,6 +58,7 @@ app.use("/api/applications", require("./routes/applicationStatus"));
 app.use("/api/dashboard", require("./routes/dashboard"));
 app.use("/api/ai", require("./routes/ai"));
 app.use("/api/ingest", require("./routes/ingest"));
+app.use("/api/resume", require("./routes/resume"));
 
 mongoose
   .connect(MONGO_URI)
