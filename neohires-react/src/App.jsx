@@ -8,18 +8,12 @@ import Features from "./components/Features";
 import AuthModal from "./components/AuthModal";
 import Dashboard from "./components/Dashboard";
 import ModeToggle from "./components/ModeToggle";
-import MonthSelector from "./components/MonthSelector";
 import AdvancedFilters from "./components/AdvancedFilters";
 import SortSelector from "./components/SortSelector";
 import Pagination from "./components/Pagination";
 import InternshipCard from "./components/InternshipCard";
 import HackathonCard from "./components/HackathonCard";
 import { fetchInternships, fetchHackathons } from "./services/api";
-
-const MONTH_ORDER = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 const ITEMS_PER_PAGE = 6;
 
@@ -31,7 +25,7 @@ function App() {
   const [mode, setMode] = useState("internships");
   const [internships, setInternships] = useState([]);
   const [hackathons, setHackathons] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState("January");
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedType, setSelectedType] = useState("All");
@@ -52,13 +46,19 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchInternships().then(setInternships);
-    fetchHackathons().then(setHackathons);
+    // If the API returns an error object instead of a list, fall back to an empty
+    // list so the page shows "No listings found" instead of crashing.
+    fetchInternships()
+      .then((data) => setInternships(Array.isArray(data) ? data : []))
+      .catch(() => setInternships([]));
+    fetchHackathons()
+      .then((data) => setHackathons(Array.isArray(data) ? data : []))
+      .catch(() => setHackathons([]));
   }, []);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [mode, selectedMonth, searchQuery, selectedType, selectedEligibility, selectedRole, sortBy]);
+  }, [mode, searchQuery, selectedType, selectedEligibility, selectedRole, sortBy]);
 
   const handleAuthSuccess = (userData, tokenData) => {
     setUser(userData);
@@ -73,11 +73,6 @@ function App() {
     localStorage.removeItem("neohire_token");
     localStorage.removeItem("neohire_user");
   };
-
-  const filterByMonth = (listings) =>
-    listings.filter(
-      (item) => item.month && item.month.toLowerCase() === selectedMonth.toLowerCase()
-    );
 
   function filterBySearch(items) {
     if (!searchQuery.trim()) return items;
@@ -110,8 +105,27 @@ function App() {
     });
   }
 
+  // Live data arrives grouped by company (one company's postings after another).
+  // Round-robin across companies so the first page shows a mix.
+  function interleaveByCompany(items) {
+    const groups = new Map();
+    for (const item of items) {
+      const key = item.company || "";
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    }
+    const queues = [...groups.values()];
+    const result = [];
+    for (let i = 0; result.length < items.length; i++) {
+      for (const queue of queues) {
+        if (i < queue.length) result.push(queue[i]);
+      }
+    }
+    return result;
+  }
+
   function sortListings(items) {
-    if (sortBy === "none") return items;
+    if (sortBy === "none") return interleaveByCompany(items);
 
     const sorted = [...items];
 
@@ -119,12 +133,6 @@ function App() {
       sorted.sort((a, b) => (a.company || "").localeCompare(b.company || ""));
     } else if (sortBy === "company-desc") {
       sorted.sort((a, b) => (b.company || "").localeCompare(a.company || ""));
-    } else if (sortBy === "month-order") {
-      sorted.sort((a, b) => {
-        const indexA = MONTH_ORDER.indexOf(a.month);
-        const indexB = MONTH_ORDER.indexOf(b.month);
-        return indexA - indexB;
-      });
     }
 
     return sorted;
@@ -138,7 +146,7 @@ function App() {
 
   const allFilteredListings =
     mode === "internships"
-      ? sortListings(filterBySearch(filterByAdvanced(filterByMonth(internships))))
+      ? sortListings(filterBySearch(filterByAdvanced(internships)))
       : sortListings(filterBySearch(hackathons));
 
   const totalPages = Math.ceil(allFilteredListings.length / ITEMS_PER_PAGE) || 1;
@@ -180,10 +188,6 @@ function App() {
 
         <ModeToggle mode={mode} setMode={setMode} />
 
-        {mode === "internships" && (
-          <MonthSelector selectedMonth={selectedMonth} setSelectedMonth={setSelectedMonth} />
-        )}
-
         <div className="search-bar-wrapper">
           <svg className="search-bar-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -216,7 +220,7 @@ function App() {
           <SortSelector
             sortBy={sortBy}
             setSortBy={setSortBy}
-            showMonthOption={mode === "internships"}
+            showMonthOption={false}
           />
         </div>
 

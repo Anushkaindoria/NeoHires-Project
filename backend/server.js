@@ -67,15 +67,19 @@ mongoose
     setInterval(cleanupExpiredListings, 60 * 60 * 1000);
     require("./services/pipeline").runPipeline();
     setInterval(() => require("./services/pipeline").runPipeline(), 6 * 60 * 60 * 1000);
+    const { runInternshipsPipeline } = require("./internshipsPipeline");
+    runInternshipsPipeline();
+    setInterval(runInternshipsPipeline, 60 * 60 * 1000);
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
   });
 
-app.use(express.static(path.join(__dirname, "..")));
+const distPath = path.join(__dirname, "..", "neohires-react", "dist");
+app.use(express.static(distPath));
 
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, "..", "index.html"));
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
 app.listen(PORT, () => {
