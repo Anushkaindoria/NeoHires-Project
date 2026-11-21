@@ -5,6 +5,8 @@ const Internship = require("../models/Internship");
 const { analyzeForInternship } = require("../services/resumeAnalyzer");
 
 const router = express.Router();
+const { rateLimit } = require("../middleware/rateLimit");
+router.use(rateLimit({ windowMs: 60_000, max: 10 })); // 10 requests/min per IP
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
