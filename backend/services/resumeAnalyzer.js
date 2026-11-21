@@ -3,6 +3,8 @@
 // analyzeResume(text)                  -> general resume score + tips
 // analyzeForInternship(text, listing)  -> match against ONE internship's description
 
+const { evaluateRole } = require("./roleProfiles");
+
 const SKILLS = {
   programming: [
     "javascript", "typescript", "python", "java", "c++", "c#", "golang", "rust", "php",
@@ -231,8 +233,20 @@ function analyzeForInternship(rawText, internship) {
 
   const total = jdSkills.length + keywords.length;
   const matchedCount = matchedSkills.length + matchedKeywords.length;
-  const matchPercent =
+  let matchPercent =
     dataQuality !== "none" && total >= 3 ? Math.round((matchedCount / total) * 100) : null;
+
+  // Role baseline (e.g. Data Analyst): what the ROLE expects, not only the words of this listing
+  const roleFit = evaluateRole(`${role} ${internship.name || ""}`, resumeLower, hasSkill);
+  if (roleFit) {
+    // 60% = role expectations, 40% = skills named in this listing (generic words are ignored)
+    const listingPart = jdSkills.length ? (matchedSkills.length / jdSkills.length) * 100 : roleFit.score;
+    matchPercent = Math.round(0.6 * roleFit.score + 0.4 * listingPart);
+  }
+  const roleHave = roleFit ? roleFit.have.map((s) => s.toLowerCase()) : [];
+  const roleMissing = roleFit ? roleFit.missing.must.map((s) => s.toLowerCase()) : [];
+  const finalMatched = [...new Set([...matchedSkills, ...roleHave])];
+  const finalMissing = [...new Set([...missingSkills, ...roleMissing])].filter((s) => !finalMatched.includes(s));
 
   const tips = [];
 
@@ -269,6 +283,13 @@ function analyzeForInternship(rawText, internship) {
     );
   }
 
+  if (roleFit && roleFit.missing.must.length) {
+    tips.push(
+      `Typical ${roleFit.role} resumes show these core skills, which were not found in yours: ${roleFit.missing.must.join(", ")}. ` +
+        `Add them only if you genuinely have them; otherwise make them a learning priority.`
+    );
+  }
+
   let generalTips = base.tips;
   if (!base.sections.summary) {
     tips.push(
@@ -285,7 +306,8 @@ function analyzeForInternship(rawText, internship) {
     internship: { _id: internship._id, company, role, applyLink: internship.applyLink },
     matchPercent,
     dataQuality,
-    skills: { matched: matchedSkills, missing: missingSkills },
+    skills: { matched: finalMatched, missing: finalMissing },
+    roleFit,
     keywords: { matched: matchedKeywords, missing: missingKeywords },
     resumeScore: base.score,
     tips: [...tips, ...generalTips], // listing-specific tips first, then general ones
