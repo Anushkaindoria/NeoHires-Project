@@ -1,8 +1,12 @@
 const express = require("express");
 const crypto = require("crypto");
 const { requireAuth } = require("./auth");
-const { askGemini } = require("../lib/gemini");
-const { buildInterviewPrompt, FEEDBACK_PROMPT } = require("../lib/persona");
+const {
+  buildQuestionSet,
+  scoreAnswer,
+  reaction,
+  buildReport,
+} = require("../lib/interviewEngine");
 const rateLimit = require("../lib/rateLimit");
 
 const router = express.Router();
@@ -28,43 +32,36 @@ const getSession = (req, res) => {
   return session;
 };
 
-const handleError = (err, res) => {
-  if (err.message === "AI_BUSY") {
-    return res.status(503).json({ message: "AI is busy right now. Please try again." });
-  }
-  return res.status(500).json({ message: err.message });
-};
-
-router.post("/start", async (req, res) => {
+router.post("/start", (req, res) => {
   try {
     const role = (req.body.role || "").trim();
     if (!role) return res.status(400).json({ message: "Role is required" });
 
-    const systemPrompt = buildInterviewPrompt(role, req.user.name);
-    const history = [{ role: "user", text: "Hello, I am ready for the interview." }];
-    const question = await askGemini(systemPrompt, history);
-    history.push({ role: "model", text: question });
+    const questions = buildQuestionSet(role);
+    const name = req.user.name || "there";
+    const first = `Hello ${name}, I am Priya. Let's begin your ${role} interview. ${questions[0].q}`;
 
     const id = crypto.randomUUID();
     sessions.set(id, {
       userId: req.user._id,
       role,
-      systemPrompt,
-      history,
+      questions,
+      current: 0,
+      results: [],
+      transcript: [{ role: "model", text: first }],
       startedAt: Date.now(),
       durationMs: DURATION_MS,
     });
 
-    return res.status(201).json({ sessionId: id, question, durationMs: DURATION_MS });
+    return res.status(201).json({ sessionId: id, question: first, durationMs: DURATION_MS });
   } catch (err) {
-    return handleError(err, res);
+    return res.status(500).json({ message: err.message });
   }
 });
 
 router.post("/:id/answer", async (req, res) => {
-  let session;
   try {
-    session = getSession(req, res);
+    const session = getSession(req, res);
     if (!session) return;
 
     const answer = (req.body.answer || "").trim();
@@ -75,45 +72,60 @@ router.post("/:id/answer", async (req, res) => {
       return res.status(400).json({ timeUp: true, message: "Time is up. Please end the interview." });
     }
 
-    session.history.push({ role: "user", text: answer.slice(0, 2000) });
-    const question = await askGemini(session.systemPrompt, session.history);
-    session.history.push({ role: "model", text: question });
+    const q = session.questions[session.current];
+    const base = scoreAnswer(answer.slice(0, 2000), q.keywords);
+const { matched, wordCount } = base;
+let score = base.score;
+try {
+  const r = await fetch("http://127.0.0.1:8000/score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answer: answer.slice(0, 2000), keywords: q.keywords }),
+  });
+  if (r.ok) score = (await r.json()).score;
+} catch (e) {
+  // ML API is down: keep the keyword score
+}
+    session.results.push({
+      question: q.q,
+      score,
+      matched,
+      total: q.keywords.length,
+      wordCount,
+    });
+    session.transcript.push({ role: "user", text: answer.slice(0, 2000) });
+    session.current += 1;
+
+    let question;
+    let finished = false;
+    if (session.current >= session.questions.length) {
+      question = `${reaction(score)} That was the last question. Please end the interview to see your feedback.`;
+      finished = true;
+    } else {
+      question = `${reaction(score)} ${session.questions[session.current].q}`;
+    }
+    session.transcript.push({ role: "model", text: question });
 
     return res.json({
       question,
+      finished,
       timeLeftMs: session.durationMs - (Date.now() - session.startedAt),
     });
   } catch (err) {
-    if (session) session.history.pop();
-    return handleError(err, res);
+    return res.status(500).json({ message: err.message });
   }
 });
 
-router.post("/:id/end", async (req, res) => {
+router.post("/:id/end", (req, res) => {
   try {
     const session = getSession(req, res);
     if (!session) return;
 
-    const transcript = session.history
-      .map((m) => `${m.role === "model" ? "Interviewer" : "Candidate"}: ${m.text}`)
-      .join("\n");
-
-    const raw = await askGemini(FEEDBACK_PROMPT, [
-      { role: "user", text: `Role: ${session.role}\n\n${transcript}` },
-    ]);
-
-    const clean = raw.replace(/```json|```/g, "").trim();
-    let report;
-    try {
-      report = JSON.parse(clean);
-    } catch {
-      return res.status(502).json({ message: "Could not read feedback. Please try again." });
-    }
-
+    const report = buildReport(session.results);
     sessions.delete(req.params.id);
     return res.json({ report });
   } catch (err) {
-    return handleError(err, res);
+    return res.status(500).json({ message: err.message });
   }
 });
 

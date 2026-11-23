@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { saveListing, setApplicationStatus } from "../services/api";
 import ResumeCheckModal from "./ResumeCheckModal";
+import MockInterviewModal from "./MockInterviewModal";
 
 const POPUP_W = 340;
 const POPUP_MAX_H = 320;
@@ -45,6 +46,7 @@ function InternshipCard({ internship, token, isLoggedIn }) {
   const [logoFailed, setLogoFailed] = useState(false);
   const [pos, setPos] = useState(null); // null = popup hidden
   const [showResume, setShowResume] = useState(false);
+  const [showMock, setShowMock] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -128,8 +130,28 @@ function InternshipCard({ internship, token, isLoggedIn }) {
         Check my resume
       </button>
 
+            {isLoggedIn && (
+        <button
+          className="save-btn"
+          onClick={() => {
+            setPos(null);
+            setShowMock(true);
+          }}
+        >
+          Mock Interview
+        </button>
+      )}
+
       {showResume && (
         <ResumeCheckModal internship={internship} onClose={() => setShowResume(false)} />
+      )}
+
+      {showMock && (
+        <MockInterviewModal
+          internship={internship}
+          token={token}
+          onClose={() => setShowMock(false)}
+        />
       )}
 
       {pos &&

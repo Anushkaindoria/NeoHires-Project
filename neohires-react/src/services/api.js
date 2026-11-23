@@ -105,3 +105,40 @@ export async function removeSavedListing(token, savedId) {
   if (!res.ok) throw new Error(data.message || "Failed to remove saved listing");
   return data;
 }
+export async function startMockInterview(token, role) {
+  const res = await fetch(`${API_BASE}/mock-interview/start`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ role }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Failed to start interview");
+  return data;
+}
+
+export async function sendMockAnswer(token, sessionId, answer) {
+  const res = await fetch(`${API_BASE}/mock-interview/${sessionId}/answer`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ answer }),
+  });
+  const data = await res.json();
+  if (!res.ok && !data.timeUp) throw new Error(data.message || "Failed to send answer");
+  return data;
+}
+
+export async function endMockInterview(token, sessionId) {
+  const res = await fetch(`${API_BASE}/mock-interview/${sessionId}/end`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Failed to end interview");
+  return data;
+}
