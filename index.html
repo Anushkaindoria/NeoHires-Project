@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="mock.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" type="image/png" href="assets/logos/favicon.png">
 </head>
@@ -18,6 +19,7 @@
         <a href="#app-section">Browse</a>
         <a href="#how-it-works">How it works</a>
         <a href="#features">Features</a>
+        <a href="#mock-section">Mock Interview</a>
       </div>
       <a href="#app-section" class="nav-cta">Get started</a>
     </div>
@@ -209,7 +211,29 @@
         </div>
       </section>
     </main>
+    <section class="mock-section" id="mock-section">
+  <h2>AI Mock Interview</h2>
 
+  <div id="mock-setup" class="mock-card">
+    <p>Enter the role you are preparing for. You get a 10-minute interview with an AI HR, then a feedback report.</p>
+    <input id="mock-role" type="text" placeholder="e.g. Frontend Intern">
+    <button id="mock-start-btn" class="primary-btn">Start Interview</button>
+    <div id="mock-msg" class="mock-msg"></div>
+  </div>
+
+  <div id="mock-chat" class="mock-card hidden">
+    <div class="mock-topbar">
+      <span>Time left: <strong id="mock-timer">10:00</strong></span>
+      <button id="mock-end-btn" class="secondary-btn">End &amp; get feedback</button>
+    </div>
+    <div id="mock-messages" class="mock-messages"></div>
+    <textarea id="mock-answer" rows="3" maxlength="2000" placeholder="Type your answer..."></textarea>
+    <button id="mock-send-btn" class="primary-btn">Send</button>
+    <div id="mock-chat-msg" class="mock-msg"></div>
+  </div>
+
+  <div id="mock-feedback" class="mock-card hidden"></div>
+</section>
     <section id="mode-toggle">
       <button class="toggle-btn active" onclick="showInternships()">Internships</button>
       <button class="toggle-btn" onclick="showHackathons()">Hackathons</button>
@@ -239,5 +263,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="mock.js"></script>
 </body>
 </html>

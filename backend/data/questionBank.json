@@ -1,0 +1,26 @@
+{
+  "hr": [
+    { "q": "Tell me about yourself.", "keywords": ["student", "project", "skill", "learn", "interest", "college"] },
+    { "q": "What are your biggest strengths?", "keywords": ["strength", "quick", "learn", "team", "problem", "consistent", "disciplined"] },
+    { "q": "Tell me about a time you worked in a team and faced a conflict.", "keywords": ["team", "conflict", "communicate", "solved", "listen", "together", "result"] },
+    { "q": "What is one weakness you are working to improve?", "keywords": ["weakness", "improve", "working", "learn", "practice", "feedback"] },
+    { "q": "Where do you see yourself in five years?", "keywords": ["grow", "goal", "career", "skill", "lead", "learn", "contribute"] },
+    { "q": "Why should we hire you for this role?", "keywords": ["skill", "project", "fit", "contribute", "passion", "learn", "value"] }
+  ],
+  "software": [
+    { "q": "What is the difference between an array and a linked list?", "keywords": ["array", "linked list", "memory", "index", "pointer", "insert", "delete", "contiguous"] },
+    { "q": "Explain what OOP is and name its four pillars.", "keywords": ["encapsulation", "inheritance", "polymorphism", "abstraction", "object", "class"] },
+    { "q": "What is the difference between SQL and NoSQL databases?", "keywords": ["table", "schema", "relational", "document", "scalable", "join", "mongodb", "flexible"] },
+    { "q": "What is a REST API and how does it work?", "keywords": ["http", "get", "post", "endpoint", "json", "stateless", "request", "response"] },
+    { "q": "What is time complexity? Explain Big O with an example.", "keywords": ["big o", "n", "loop", "linear", "constant", "log", "efficiency", "worst case"] },
+    { "q": "Tell me about a project you built and the challenges you faced.", "keywords": ["project", "built", "challenge", "bug", "solved", "tech", "learned", "deploy"] }
+  ],
+  "data": [
+    { "q": "What is the difference between mean, median and mode?", "keywords": ["average", "middle", "frequent", "outlier", "skew", "distribution"] },
+    { "q": "How do you handle missing values in a dataset?", "keywords": ["missing", "null", "drop", "fill", "mean", "median", "impute", "clean"] },
+    { "q": "Explain the difference between INNER JOIN and LEFT JOIN.", "keywords": ["join", "inner", "left", "match", "null", "table", "rows"] },
+    { "q": "What is data cleaning and why is it important?", "keywords": ["duplicate", "missing", "format", "accuracy", "quality", "outlier", "consistent"] },
+    { "q": "How would you explain a chart or insight to a non-technical person?", "keywords": ["simple", "visual", "story", "audience", "insight", "decision", "dashboard"] },
+    { "q": "Tell me about a data project you have done.", "keywords": ["dataset", "analysis", "excel", "python", "sql", "chart", "insight", "result"] }
+  ]
+}
